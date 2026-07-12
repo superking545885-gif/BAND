@@ -1,0 +1,4192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>自由 - WA Status</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background: #000000;
+            touch-action: none;
+        }
+
+        /* ============ HITAM POLOS UNTUK LOGIN ============ */
+        #loginPage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            padding: 20px;
+            background: #000000;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #loginPage.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+
+        .login-card {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 32px;
+            padding: 40px 28px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 2;
+            animation: floatIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes floatIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .login-card .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-card .logo .icon-wrapper {
+            display: inline-block;
+            background: rgba(244, 114, 182, 0.12);
+            padding: 18px;
+            border-radius: 24px;
+            border: 1px solid rgba(244, 114, 182, 0.15);
+            animation: pulseIcon 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseIcon {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .login-card .logo .icon-wrapper i {
+            font-size: 44px;
+            color: #f472b6;
+        }
+
+        .login-card .logo h2 {
+            color: #fff;
+            font-size: 30px;
+            font-weight: 800;
+            margin-top: 14px;
+            letter-spacing: 2px;
+        }
+
+        .login-card .logo h2 span {
+            color: #f472b6;
+            font-weight: 800;
+            position: relative;
+        }
+
+        .login-card .logo h2 span::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #f472b6;
+            border-radius: 2px;
+            animation: underlinePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes underlinePulse {
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scaleX(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+
+        .login-card .logo .subtitle {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 11px;
+            margin-top: 4px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        .login-card .input-group {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 4px 16px 4px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1.5px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .login-card .input-group:focus-within {
+            border-color: rgba(244, 114, 182, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .login-card .input-group i {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 18px;
+            text-align: center;
+        }
+
+        .login-card .input-group:focus-within i {
+            color: #f472b6;
+        }
+
+        .login-card .input-group input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 14px 0;
+            font-size: 15px;
+            color: #fff;
+            outline: none;
+            font-weight: 500;
+        }
+
+        .login-card .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: 400;
+        }
+
+        .login-card .input-group .toggle-pass {
+            color: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 4px;
+            font-size: 15px;
+        }
+
+        .login-card .input-group .toggle-pass:hover {
+            color: rgba(244, 114, 182, 0.3);
+        }
+
+        .login-card .btn-login {
+            width: 100%;
+            padding: 17px 0;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(244, 114, 182, 0.12);
+            color: #f9a8d4;
+            border: 1.5px solid rgba(244, 114, 182, 0.15);
+            letter-spacing: 1.5px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card .btn-login::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .login-card .btn-login:hover::after {
+            left: 100%;
+        }
+
+        .login-card .btn-login:active {
+            transform: scale(0.96);
+        }
+
+        .login-card .btn-login i {
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .login-card .btn-login:active i {
+            transform: rotate(90deg);
+        }
+
+        .login-card .login-error {
+            color: #f87171;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 10px;
+            min-height: 20px;
+            opacity: 0;
+            transition: all 0.4s ease;
+            transform: translateY(-6px);
+        }
+
+        .login-card .login-error.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .login-card .login-footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.06);
+            font-size: 10px;
+            margin-top: 20px;
+            letter-spacing: 1.5px;
+            font-weight: 300;
+        }
+
+        .login-card .login-footer i {
+            color: rgba(244, 114, 182, 0.1);
+            margin: 0 4px;
+        }
+
+        .lang-selector {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 8px 14px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .lang-btn:active {
+            transform: scale(0.92);
+        }
+
+        .lang-btn.active {
+            background: rgba(244, 114, 182, 0.15);
+            border-color: rgba(244, 114, 182, 0.2);
+            color: #f9a8d4;
+        }
+
+        .lang-btn:hover {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* ============ BACKGROUND VIDEO ============ */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 0;
+            pointer-events: none;
+            user-select: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .bg-video.show {
+            opacity: 1;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(26, 16, 37, 0.5);
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .overlay.show {
+            opacity: 1;
+        }
+
+        /* ============ SPLASH VIDEO ============ */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 15;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #000000;
+        }
+
+        #splashScreen.show {
+            display: flex;
+            animation: fadeInSplash 0.5s ease;
+        }
+
+        @keyframes fadeInSplash {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        #splashScreen video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ============ TOMBOL SKIP ============ */
+        .btn-skip {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 16;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 17px;
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.5);
+            text-stroke: 2px rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            display: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-skip.show {
+            display: block;
+            animation: fadeInSkip 0.5s ease;
+        }
+
+        @keyframes fadeInSkip {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .btn-skip:active {
+            transform: scale(0.92);
+        }
+
+        .btn-skip:hover {
+            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.7);
+            text-stroke: 2px rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ============ MAIN APP ============ */
+        #mainApp {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 4;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #mainApp.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px 14px 80px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .main-content::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
+
+        .content-wrapper {
+            border-radius: 20px;
+            padding: 16px 16px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.4s ease;
+        }
+
+        .mode-dark .content-wrapper {
+            background: rgba(30, 25, 40, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .mode-light .content-wrapper {
+            background: rgba(220, 210, 225, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .mode-light .main-header .left .user-info .name {
+            color: #1a1025;
+        }
+        .mode-light .main-header .left .user-info .role {
+            color: rgba(26, 16, 37, 0.5);
+        }
+        .mode-light .main-header .right .btn-logout {
+            color: rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+        .mode-light .tab-btn {
+            color: rgba(0, 0, 0, 0.25);
+            border-color: rgba(0, 0, 0, 0.04);
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .mode-light .tab-btn.tab-ban.active {
+            background: rgba(244, 114, 182, 0.15);
+            border-color: rgba(244, 114, 182, 0.25);
+            color: #c084c5;
+        }
+        .mode-light .tab-btn.tab-unban.active {
+            background: rgba(52, 211, 153, 0.1);
+            border-color: rgba(52, 211, 153, 0.2);
+            color: #0d8a4e;
+        }
+        .mode-light .duration-btn {
+            color: rgba(0, 0, 0, 0.25);
+            border-color: rgba(0, 0, 0, 0.04);
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .mode-light .duration-btn.active-ban {
+            background: rgba(244, 114, 182, 0.15);
+            border-color: rgba(244, 114, 182, 0.25);
+            color: #c084c5;
+        }
+        .mode-light .duration-btn.active-unban {
+            background: rgba(52, 211, 153, 0.1);
+            border-color: rgba(52, 211, 153, 0.2);
+            color: #0d8a4e;
+        }
+        .mode-light .input-group-main {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+        .mode-light .input-group-main input {
+            color: #1a1025;
+        }
+        .mode-light .input-group-main input::placeholder {
+            color: rgba(0, 0, 0, 0.2);
+        }
+        .mode-light .input-group-main i {
+            color: rgba(0, 0, 0, 0.2);
+        }
+        .mode-light .status-card {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.03);
+        }
+        .mode-light .status-card .status-title {
+            color: #1a1025;
+        }
+        .mode-light .status-card .status-desc {
+            color: rgba(0, 0, 0, 0.3);
+        }
+        .mode-light .status-banned {
+            background: rgba(244, 114, 182, 0.04);
+            border-color: rgba(244, 114, 182, 0.06);
+        }
+        .mode-light .status-banned .status-title {
+            color: #c084c5;
+        }
+        .mode-light .status-unbanned {
+            background: rgba(52, 211, 153, 0.03);
+            border-color: rgba(52, 211, 153, 0.05);
+        }
+        .mode-light .status-unbanned .status-title {
+            color: #0d8a4e;
+        }
+        .mode-light .btn-execute {
+            color: #1a1025;
+            border-color: rgba(0, 0, 0, 0.04);
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .mode-light .btn-execute.mode-ban {
+            background: rgba(244, 114, 182, 0.1);
+            border-color: rgba(244, 114, 182, 0.1);
+            color: #c084c5;
+        }
+        .mode-light .btn-execute.mode-unban {
+            background: rgba(52, 211, 153, 0.08);
+            border-color: rgba(52, 211, 153, 0.08);
+            color: #0d8a4e;
+        }
+        .mode-light .account-item {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.03);
+        }
+        .mode-light .account-item .info .name {
+            color: #1a1025;
+        }
+        .mode-light .account-item .info .expired {
+            color: rgba(0, 0, 0, 0.2);
+        }
+        .mode-light .create-account-box {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+        .mode-light .create-account-box .form-group input,
+        .mode-light .create-account-box .form-group select {
+            color: #1a1025;
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+        .mode-light .create-account-box .form-group label {
+            color: rgba(0, 0, 0, 0.4);
+        }
+        .mode-light .create-account-box .box-title {
+            color: #c084c5;
+        }
+        .mode-light .create-account-box .btn-create {
+            background: rgba(244, 114, 182, 0.1);
+            border-color: rgba(244, 114, 182, 0.12);
+            color: #c084c5;
+        }
+        .mode-light .account-list .list-title {
+            color: rgba(0, 0, 0, 0.3);
+        }
+        .mode-light .history-item {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.03);
+        }
+        .mode-light .history-item .info .title {
+            color: #1a1025;
+        }
+        .mode-light .history-item .info .time {
+            color: rgba(0, 0, 0, 0.15);
+        }
+        .mode-light .settings-item {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.03);
+        }
+        .mode-light .settings-item .left .label {
+            color: #1a1025;
+        }
+        .mode-light .settings-item .right {
+            color: rgba(0, 0, 0, 0.2);
+        }
+        .mode-light .nav-bar {
+            background: rgba(220, 210, 225, 0.95);
+            border-color: rgba(0, 0, 0, 0.03);
+        }
+        .mode-light .nav-item {
+            color: rgba(0, 0, 0, 0.15);
+        }
+        .mode-light .nav-item.active {
+            color: #c084c5;
+        }
+        .mode-light .nav-item .nav-badge {
+            color: #fff;
+        }
+
+        .mode-toggle {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 30px;
+            padding: 4px;
+            display: flex;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            width: 60px;
+            height: 32px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .mode-toggle .toggle-track {
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+        }
+
+        .mode-toggle .toggle-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #f472b6;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: absolute;
+            left: 2px;
+            box-shadow: 0 2px 8px rgba(244, 114, 182, 0.2);
+        }
+
+        .mode-toggle .toggle-thumb.light {
+            left: calc(100% - 26px);
+            background: #a78bfa;
+        }
+
+        .mode-toggle .toggle-icons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.15);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .mode-light .mode-toggle {
+            border-color: rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .mode-light .mode-toggle .toggle-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .main-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 4px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 14px;
+        }
+
+        .main-header .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .main-header .left .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(244, 114, 182, 0.15);
+            border: 1px solid rgba(244, 114, 182, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f472b6;
+            font-size: 18px;
+        }
+
+        .main-header .left .user-info .name {
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .main-header .left .user-info .role {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .main-header .left .user-info .expired-info {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 1px;
+        }
+
+        .main-header .right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .main-header .right .btn-logout {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 8px 14px;
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .main-header .right .btn-logout:active {
+            transform: scale(0.95);
+            background: rgba(248, 113, 113, 0.1);
+            color: #f87171;
+        }
+
+        /* ============ VIDEO PLAYER ============ */
+        .video-player-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 50%;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: none;
+        }
+
+        .video-player-wrapper.show {
+            display: block;
+            animation: fadeVideo 0.5s ease;
+        }
+
+        @keyframes fadeVideo {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .video-player-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+            background: #0a0812;
+        }
+
+        .video-player-wrapper .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 14px;
+            z-index: 3;
+        }
+
+        .video-player-wrapper .play-overlay i {
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.5);
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            animation: bouncePlay 2s ease-in-out infinite;
+        }
+
+        @keyframes bouncePlay {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .video-player-wrapper .play-overlay:active {
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .video-player-wrapper .play-overlay:active i {
+            transform: scale(0.85);
+        }
+        .video-player-wrapper .play-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ============ PAGE CONTAINER ============ */
+        .page-container {
+            display: none;
+            animation: fadePage 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .page-container.active {
+            display: block;
+        }
+
+        @keyframes fadePage {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============ PAGE HOME ============ */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px 8px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            touch-action: manipulation;
+            text-align: center;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.03);
+            letter-spacing: 0.5px;
+        }
+
+        .tab-btn:active {
+            transform: scale(0.95);
+        }
+        .tab-btn i {
+            font-size: 16px;
+        }
+
+        .tab-btn.tab-ban.active {
+            background: rgba(244, 114, 182, 0.15);
+            border-color: rgba(244, 114, 182, 0.25);
+            color: #f9a8d4;
+        }
+
+        .tab-btn.tab-unban.active {
+            background: rgba(52, 211, 153, 0.1);
+            border-color: rgba(52, 211, 153, 0.2);
+            color: #6ee7b7;
+        }
+
+        .duration-options {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 4px 0 14px;
+            margin-bottom: 14px;
+            scrollbar-width: none;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+        }
+
+        .duration-options::-webkit-scrollbar {
+            display: none;
+        }
+
+        .duration-btn {
+            flex: 0 0 auto;
+            padding: 14px 24px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            touch-action: manipulation;
+            white-space: nowrap;
+            border: 2px solid rgba(255, 255, 255, 0.03);
+            min-width: 100px;
+            text-align: center;
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .duration-btn:active {
+            transform: scale(0.92);
+        }
+        .duration-btn i {
+            font-size: 15px;
+        }
+
+        .duration-btn.active-ban {
+            background: rgba(244, 114, 182, 0.15);
+            border-color: rgba(244, 114, 182, 0.25);
+            color: #f9a8d4;
+        }
+
+        .duration-btn.active-unban {
+            background: rgba(52, 211, 153, 0.1);
+            border-color: rgba(52, 211, 153, 0.2);
+            color: #6ee7b7;
+        }
+
+        .input-group-main {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 6px 14px 6px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1.5px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            min-height: 50px;
+        }
+
+        .input-group-main:focus-within {
+            border-color: rgba(244, 114, 182, 0.12);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .input-group-main i {
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group-main:focus-within i {
+            color: rgba(244, 114, 182, 0.3);
+        }
+
+        .input-group-main input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 12px 0;
+            font-size: 15px;
+            font-weight: 500;
+            color: #fff;
+            outline: none;
+            width: 100%;
+        }
+
+        .input-group-main input::placeholder {
+            color: rgba(255, 255, 255, 0.12);
+            font-weight: 400;
+        }
+
+        /* ============ TOMBOL CEK NOMOR ============ */
+        .check-btn {
+            width: 100%;
+            padding: 14px 0;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 6px;
+            min-height: 48px;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .check-btn:active {
+            transform: scale(0.95);
+        }
+
+        .check-btn i {
+            font-size: 16px;
+        }
+
+        .check-btn .status-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+
+        .check-btn .status-badge.banned {
+            background: rgba(244, 114, 182, 0.15);
+            color: #f472b6;
+        }
+
+        .check-btn .status-badge.active {
+            background: rgba(52, 211, 153, 0.12);
+            color: #34d399;
+        }
+
+        .check-btn .status-badge.unknown {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .mode-light .check-btn {
+            color: rgba(0, 0, 0, 0.4);
+            border-color: rgba(0, 0, 0, 0.04);
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .mode-light .check-btn .status-badge.unknown {
+            background: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.3);
+        }
+
+        /* ============ STATUS CARD ============ */
+        .status-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px 14px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+
+        .status-card .status-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .status-card .status-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            transition: all 0.5s ease;
+        }
+
+        .status-card .status-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .status-card .status-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .status-card .status-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 400;
+        }
+
+        .status-banned {
+            background: rgba(244, 114, 182, 0.04);
+            border-color: rgba(244, 114, 182, 0.06);
+        }
+
+        .status-banned .status-icon-wrapper {
+            background: rgba(244, 114, 182, 0.08);
+            color: #f472b6;
+            animation: shakeIn 0.5s ease;
+        }
+
+        .status-banned .status-title {
+            color: #f9a8d4;
+        }
+
+        .status-unbanned {
+            background: rgba(52, 211, 153, 0.03);
+            border-color: rgba(52, 211, 153, 0.05);
+        }
+
+        .status-unbanned .status-icon-wrapper {
+            background: rgba(52, 211, 153, 0.06);
+            color: #34d399;
+            animation: popIn 0.5s ease;
+        }
+
+        .status-unbanned .status-title {
+            color: #6ee7b7;
+        }
+
+        .status-check {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .status-check .status-icon-wrapper {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .status-check .status-title {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes shakeIn {
+            0% {
+                transform: scale(0.8) rotate(-10deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2) rotate(5deg);
+            }
+            100% {
+                transform: scale(1) rotate(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.15);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* ============ LOADING OVERLAY ============ */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 20;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+            animation: fadeInOverlay 0.3s ease;
+        }
+
+        @keyframes fadeInOverlay {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(244, 114, 182, 0.08);
+            border-top: 4px solid #f472b6;
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+            box-shadow: 0 0 40px rgba(244, 114, 182, 0.1);
+            position: relative;
+        }
+
+        .loading-spinner::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top: 2px solid rgba(244, 114, 182, 0.15);
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .loading-progress {
+            width: 220px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .loading-progress .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f472b6, #a78bfa);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .loading-progress .bar.complete {
+            width: 100%;
+            background: linear-gradient(90deg, #4ade80, #34d399);
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.15);
+        }
+
+        .loading-done {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            animation: donePop 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .loading-done.show {
+            display: flex;
+        }
+
+        @keyframes donePop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .loading-done .done-icon {
+            font-size: 64px;
+            color: #4ade80;
+            text-shadow: 0 0 40px rgba(74, 222, 128, 0.2);
+        }
+
+        .loading-done .done-text {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .loading-done .done-sub {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 13px;
+        }
+
+        .btn-execute {
+            width: 100%;
+            padding: 18px 0;
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.03);
+            user-select: none;
+            touch-action: manipulation;
+            letter-spacing: 1.5px;
+            min-height: 58px;
+            pointer-events: auto !important;
+        }
+
+        .btn-execute:active {
+            transform: scale(0.95);
+        }
+        .btn-execute i {
+            font-size: 20px;
+            transition: all 0.4s ease;
+        }
+        .btn-execute:active i {
+            transform: rotate(90deg) scale(1.2);
+        }
+
+        .btn-execute.mode-ban {
+            background: rgba(244, 114, 182, 0.1);
+            color: #f9a8d4;
+            border-color: rgba(244, 114, 182, 0.1);
+        }
+
+        .btn-execute.mode-ban:active {
+            background: rgba(244, 114, 182, 0.16);
+        }
+
+        .btn-execute.mode-unban {
+            background: rgba(52, 211, 153, 0.08);
+            color: #6ee7b7;
+            border-color: rgba(52, 211, 153, 0.08);
+        }
+
+        .btn-execute.mode-unban:active {
+            background: rgba(52, 211, 153, 0.12);
+        }
+
+        .btn-execute:disabled {
+            opacity: 0.5;
+            pointer-events: none !important;
+        }
+
+        /* ============ PAGE AKUN ============ */
+        .account-list {
+            padding: 4px 0;
+        }
+
+        .account-list .list-title {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .create-account-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .create-account-box .box-title {
+            color: #f472b6;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .create-account-box .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .create-account-box .form-row .form-group {
+            flex: 1;
+        }
+
+        .create-account-box .form-group label {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 11px;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .create-account-box .form-group input,
+        .create-account-box .form-group select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .create-account-box .form-group input:focus,
+        .create-account-box .form-group select:focus {
+            border-color: rgba(244, 114, 182, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .create-account-box .form-group select option {
+            background: #1a1025;
+            color: #fff;
+        }
+
+        .create-account-box .btn-create {
+            width: 100%;
+            padding: 14px 0;
+            background: rgba(244, 114, 182, 0.1);
+            border: 1px solid rgba(244, 114, 182, 0.12);
+            border-radius: 12px;
+            color: #f9a8d4;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .create-account-box .btn-create:active {
+            transform: scale(0.95);
+            background: rgba(244, 114, 182, 0.15);
+        }
+
+        .account-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .account-item .info .name {
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .account-item .info .role {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        .role-owner {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+        }
+        .role-tangan {
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.1);
+        }
+        .role-vip {
+            color: #a78bfa;
+            background: rgba(167, 139, 250, 0.1);
+        }
+        .role-member {
+            color: #34d399;
+            background: rgba(52, 211, 153, 0.1);
+        }
+
+        .account-item .info .expired {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.2);
+            margin-top: 2px;
+        }
+
+        .account-item .actions button {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .account-item .actions button:active {
+            transform: scale(0.9);
+        }
+        .account-item .actions .btn-delete:hover {
+            color: #f87171;
+        }
+        .account-item .actions .btn-edit:hover {
+            color: #60a5fa;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.15);
+            padding: 30px 0;
+            font-size: 13px;
+        }
+
+        .empty-state i {
+            font-size: 30px;
+            display: block;
+            margin-bottom: 8px;
+            opacity: 0.3;
+        }
+
+        /* ============ PAGE RIWAYAT ============ */
+        .history-list {
+            padding: 4px 0;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.4s ease;
+        }
+
+        .history-item .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(244, 114, 182, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f472b6;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .history-item .info .title {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .history-item .info .time {
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 11px;
+        }
+
+        .history-empty {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.15);
+            padding: 30px 0;
+            font-size: 13px;
+        }
+
+        .history-empty i {
+            font-size: 30px;
+            display: block;
+            margin-bottom: 8px;
+            opacity: 0.3;
+        }
+
+        /* ============ PAGE SETELAN ============ */
+        .settings-list {
+            padding: 4px 0;
+        }
+
+        .settings-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideIn 0.4s ease;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .settings-item:active {
+            transform: scale(0.98);
+        }
+
+        .settings-item .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-item .left i {
+            color: rgba(244, 114, 182, 0.25);
+            font-size: 17px;
+            width: 22px;
+            text-align: center;
+        }
+
+        .settings-item .left .label {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .settings-item .right {
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .settings-item .right i {
+            font-size: 13px;
+        }
+
+        /* ============ TOGGLE NOTIFIKASI ============ */
+        .notification-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .notification-toggle .toggle-switch {
+            width: 48px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            position: relative;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .notification-toggle .toggle-switch .toggle-dot {
+            width: 22px;
+            height: 22px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification-toggle .toggle-switch.active {
+            background: #f472b6;
+        }
+
+        .notification-toggle .toggle-switch.active .toggle-dot {
+            left: 23px;
+        }
+
+        .notification-toggle .toggle-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .mode-light .notification-toggle .toggle-switch {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .mode-light .notification-toggle .toggle-switch.active {
+            background: #c084c5;
+        }
+        .mode-light .notification-toggle .toggle-label {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .lang-options {
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 0 4px 0;
+            width: 100%;
+        }
+
+        .lang-options.show {
+            display: flex;
+        }
+
+        .lang-options .lang-opt {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 8px 14px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .lang-options .lang-opt:active {
+            transform: scale(0.92);
+        }
+        .lang-options .lang-opt.active {
+            background: rgba(244, 114, 182, 0.15);
+            border-color: rgba(244, 114, 182, 0.2);
+            color: #f9a8d4;
+        }
+
+        .lang-options .lang-opt:hover {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .mode-light .settings-item .left .label {
+            color: #1a1025;
+        }
+        .mode-light .settings-item .right {
+            color: rgba(0, 0, 0, 0.2);
+        }
+        .mode-light .lang-options .lang-opt {
+            color: rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 0, 0, 0.06);
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .mode-light .lang-options .lang-opt.active {
+            background: rgba(244, 114, 182, 0.15);
+            border-color: rgba(244, 114, 182, 0.2);
+            color: #c084c5;
+        }
+        .mode-light .notification-toggle .toggle-switch {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .mode-light .notification-toggle .toggle-switch.active {
+            background: #c084c5;
+        }
+        .mode-light .notification-toggle .toggle-label {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* ============ NAVIGATION BAR ============ */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100vw;
+            background: rgba(20, 15, 30, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 10px 0 14px;
+            z-index: 10;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            pointer-events: auto !important;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            color: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            padding: 6px 16px;
+            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            min-width: 60px;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            touch-action: manipulation;
+            pointer-events: auto !important;
+        }
+
+        .nav-item:active {
+            transform: scale(0.92);
+        }
+
+        .nav-item i {
+            font-size: 24px;
+            transition: all 0.4s ease;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: #f472b6;
+        }
+
+        .nav-item .nav-badge {
+            position: absolute;
+            top: -2px;
+            right: 4px;
+            background: #f472b6;
+            color: #1a1025;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 20px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(20, 15, 30, 0.95);
+            backdrop-filter: blur(16px);
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            z-index: 25;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            max-width: 90%;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            border-color: rgba(52, 211, 153, 0.15);
+        }
+        .toast.error {
+            border-color: rgba(248, 113, 113, 0.15);
+        }
+        .toast.warning {
+            border-color: rgba(244, 114, 182, 0.15);
+        }
+
+        /* ============ KALENDER ============ */
+        .form-group input[type="date"] {
+            color-scheme: dark;
+            cursor: pointer;
+        }
+
+        .mode-light .form-group input[type="date"] {
+            color-scheme: light;
+        }
+
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.6);
+            cursor: pointer;
+        }
+
+        .mode-light .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.3);
+        }
+
+        @media (max-width: 440px) {
+            .login-card {
+                padding: 28px 18px 24px;
+                border-radius: 28px;
+            }
+            .login-card .logo .icon-wrapper {
+                padding: 14px;
+            }
+            .login-card .logo .icon-wrapper i {
+                font-size: 36px;
+            }
+            .login-card .logo h2 {
+                font-size: 24px;
+            }
+            .login-card .input-group input {
+                padding: 12px 0;
+                font-size: 14px;
+            }
+            .login-card .btn-login {
+                padding: 15px 0;
+                font-size: 16px;
+            }
+            .main-content {
+                padding: 10px 10px 70px;
+            }
+            .main-content .content-wrapper {
+                padding: 12px 12px 16px;
+            }
+            .tab-btn {
+                font-size: 14px;
+                padding: 12px 6px;
+                min-height: 48px;
+            }
+            .duration-btn {
+                font-size: 13px;
+                padding: 12px 18px;
+                min-width: 85px;
+                min-height: 46px;
+            }
+            .btn-execute {
+                font-size: 16px;
+                padding: 15px 0;
+                min-height: 50px;
+            }
+            .nav-item {
+                padding: 4px 12px;
+                min-width: 50px;
+            }
+            .nav-item i {
+                font-size: 20px;
+            }
+            .nav-item span {
+                font-size: 10px;
+            }
+            .create-account-box .form-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .input-group-main {
+                min-height: 44px;
+            }
+            .input-group-main input {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+            .video-player-wrapper .play-overlay i {
+                font-size: 36px;
+            }
+            .btn-skip {
+                font-size: 15px;
+                top: 16px;
+                right: 16px;
+                -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+                padding: 10px 18px;
+            }
+            .settings-item {
+                padding: 12px 14px;
+            }
+            .check-btn {
+                font-size: 14px;
+                padding: 12px 0;
+                min-height: 44px;
+            }
+            .notification-toggle .toggle-label {
+                font-size: 12px;
+            }
+            .notification-toggle .toggle-switch {
+                width: 42px;
+                height: 24px;
+            }
+            .notification-toggle .toggle-switch .toggle-dot {
+                width: 18px;
+                height: 18px;
+                top: 3px;
+                left: 3px;
+            }
+            .notification-toggle .toggle-switch.active .toggle-dot {
+                left: 21px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .login-card {
+                padding: 20px 14px 18px;
+                border-radius: 24px;
+            }
+            .login-card .logo .icon-wrapper {
+                padding: 12px;
+            }
+            .login-card .logo .icon-wrapper i {
+                font-size: 30px;
+            }
+            .login-card .logo h2 {
+                font-size: 22px;
+            }
+            .login-card .input-group {
+                padding: 2px 10px 2px 12px;
+            }
+            .login-card .input-group input {
+                padding: 10px 0;
+                font-size: 13px;
+            }
+            .login-card .btn-login {
+                padding: 13px 0;
+                font-size: 15px;
+            }
+            .duration-btn {
+                font-size: 12px;
+                padding: 10px 14px;
+                min-width: 70px;
+                min-height: 40px;
+            }
+            .video-player-wrapper .play-overlay i {
+                font-size: 30px;
+            }
+            .btn-skip {
+                font-size: 13px;
+                -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+                padding: 8px 16px;
+            }
+            .settings-item {
+                padding: 10px 12px;
+            }
+            .settings-item .left .label {
+                font-size: 13px;
+            }
+            .check-btn {
+                font-size: 13px;
+                padding: 10px 0;
+                min-height: 40px;
+            }
+        }
+
+        @media (max-height: 600px) and (orientation: landscape) {
+            .login-card {
+                padding: 16px 20px;
+            }
+            .login-card .logo {
+                margin-bottom: 12px;
+            }
+            .login-card .logo .icon-wrapper {
+                padding: 10px;
+            }
+            .login-card .logo .icon-wrapper i {
+                font-size: 26px;
+            }
+            .login-card .logo h2 {
+                font-size: 20px;
+                margin-top: 8px;
+            }
+            .login-card .input-group {
+                margin-bottom: 8px;
+            }
+            .login-card .input-group input {
+                padding: 8px 0;
+                font-size: 13px;
+            }
+            .login-card .btn-login {
+                padding: 11px 0;
+                font-size: 14px;
+            }
+            .main-content {
+                padding: 8px 10px 60px;
+            }
+            .main-content .content-wrapper {
+                padding: 10px 10px 14px;
+            }
+            .tab-btn {
+                min-height: 38px;
+                padding: 8px 4px;
+                font-size: 13px;
+            }
+            .duration-btn {
+                padding: 8px 14px;
+                min-width: 70px;
+                min-height: 36px;
+                font-size: 12px;
+            }
+            .status-card {
+                padding: 10px 12px;
+            }
+            .btn-execute {
+                min-height: 40px;
+                padding: 10px 0;
+                font-size: 15px;
+            }
+            .nav-bar {
+                padding: 6px 0 10px;
+            }
+            .nav-item i {
+                font-size: 18px;
+            }
+            .create-account-box {
+                padding: 10px;
+            }
+            .create-account-box .form-row {
+                flex-direction: row;
+                gap: 6px;
+            }
+            .create-account-box .form-group input,
+            .create-account-box .form-group select {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            .create-account-box .btn-create {
+                padding: 8px 0;
+                font-size: 13px;
+            }
+            .input-group-main {
+                min-height: 36px;
+            }
+            .input-group-main input {
+                padding: 8px 0;
+                font-size: 13px;
+            }
+            .video-player-wrapper .play-overlay i {
+                font-size: 28px;
+            }
+            .btn-skip {
+                font-size: 14px;
+                top: 12px;
+                right: 12px;
+                -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+                padding: 8px 16px;
+            }
+            .settings-item {
+                padding: 8px 12px;
+            }
+            .settings-item .left .label {
+                font-size: 12px;
+            }
+            .check-btn {
+                font-size: 13px;
+                padding: 8px 0;
+                min-height: 36px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============ BACKGROUND VIDEO ============ -->
+    <video class="bg-video" id="bgVideo" muted loop playsinline preload="auto">
+        <source src="bg.mp4" type="video/mp4">
+    </video>
+    <div class="overlay" id="overlayBg"></div>
+
+    <!-- ============ SPLASH VIDEO ============ -->
+    <div id="splashScreen">
+        <video id="splashVideo" playsinline preload="auto">
+            <source src="spl.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Tombol Skip -->
+    <button class="btn-skip" id="skipBtn">SKIP</button>
+
+    <!-- ============ LOGIN PAGE ============ -->
+    <div id="loginPage">
+        <div class="login-card">
+            <div class="logo">
+                <div class="icon-wrapper">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h2>自<span>由</span></h2>
+                <div class="subtitle">Manajemen Akun</div>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="loginUser" placeholder="Username">
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="loginPass" placeholder="Password">
+                <span class="toggle-pass" id="togglePass">
+                    <i class="fas fa-eye"></i>
+                </span>
+            </div>
+
+            <button class="btn-login" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> LOGIN
+            </button>
+
+            <div class="login-error" id="loginError"></div>
+            <div class="login-footer">
+                <i class="fas fa-shield-alt"></i> 自由 · All Rights Reserved <i class="fas fa-shield-alt"></i>
+            </div>
+
+            <div class="lang-selector">
+                <button class="lang-btn active" data-lang="id">ID</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="es">ES</button>
+                <button class="lang-btn" data-lang="fr">FR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ MAIN APP ============ -->
+    <div id="mainApp">
+        <div class="main-content">
+            <div class="content-wrapper mode-dark" id="contentWrapper">
+                <!-- Header -->
+                <div class="main-header">
+                    <div class="left">
+                        <div class="avatar"><i class="fas fa-user"></i></div>
+                        <div class="user-info">
+                            <div class="name" id="displayName">lanzy</div>
+                            <div class="role" id="displayRole">👑 Owner</div>
+                            <div class="expired-info" id="displayExpired">♾️ Permanen</div>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="mode-toggle" id="modeToggle">
+                            <div class="toggle-track">
+                                <div class="toggle-thumb" id="toggleThumb"></div>
+                                <div class="toggle-icons">
+                                    <span>🌙</span>
+                                    <span>☀️</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-logout" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============ VIDEO PLAYER YT.mp4 ============ -->
+                <div class="video-player-wrapper" id="videoWrapper">
+                    <video id="playerVideo" playsinline preload="auto" loop>
+                        <source src="YT.mp4" type="video/mp4">
+                    </video>
+                    <div class="play-overlay" id="playOverlay">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                </div>
+
+                <!-- ========== PAGE HOME ========== -->
+                <div class="page-container active" id="pageHome">
+                    <div class="tabs-container">
+                        <button class="tab-btn tab-ban active" id="tabBan" data-tab="ban">
+                            <i class="fas fa-ban"></i> BANNED
+                        </button>
+                        <button class="tab-btn tab-unban" id="tabUnban" data-tab="unban">
+                            <i class="fas fa-check-circle"></i> UNBANNED
+                        </button>
+                    </div>
+
+                    <div class="duration-options" id="durationOptions">
+                        <button class="duration-btn active-ban" data-duration="1hari">
+                            <i class="fas fa-clock"></i> 1H
+                        </button>
+                        <button class="duration-btn" data-duration="banned1hari" id="durBanned1Hari">
+                            <i class="fas fa-ban"></i> Banned 1H
+                        </button>
+                        <button class="duration-btn" data-duration="banned1minggu" id="durBanned1Minggu">
+                            <i class="fas fa-ban"></i> Banned 1M
+                        </button>
+                        <button class="duration-btn" data-duration="bannedpermanen" id="durBannedPermanen">
+                            <i class="fas fa-infinity"></i> Banned Permanen
+                        </button>
+                    </div>
+
+                    <div class="input-group-main">
+                        <i class="fas fa-phone-alt"></i>
+                        <input type="text" id="waNumber" placeholder="+62 812 3456 7890">
+                        <i class="fas fa-check-circle" style="color:rgba(255,255,255,0.08);font-size:14px;"></i>
+                    </div>
+
+                    <!-- TOMBOL CEK NOMOR -->
+                    <button class="check-btn" id="checkBtn">
+                        <i class="fas fa-search"></i> Cek Nomor
+                        <span class="status-badge unknown" id="checkStatus">Belum Dicek</span>
+                    </button>
+
+                    <!-- STATUS CARD -->
+                    <div class="status-card status-check" id="statusCard">
+                        <div class="status-content">
+                            <div class="status-icon-wrapper" id="statusIcon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <div class="status-text">
+                                <div class="status-title" id="statusTitle">Belum Dicek</div>
+                                <div class="status-desc" id="statusDesc">Klik tombol Cek Nomor untuk memeriksa status</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-execute mode-ban" id="executeBtn">
+                        <i class="fas fa-bolt"></i> EKSEKUSI
+                    </button>
+                </div>
+
+                <!-- ========== PAGE AKUN ========== -->
+                <div class="page-container" id="pageAkun">
+                    <div class="account-list">
+                        <div class="create-account-box">
+                            <div class="box-title">
+                                <i class="fas fa-user-plus"></i> Buat Akun Admin
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Username</label>
+                                    <input type="text" id="newUsername" placeholder="Username">
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="text" id="newPassword" placeholder="Password">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Role</label>
+                                    <select id="newRole">
+                                        <option value="tangan">Tangan Kanan</option>
+                                        <option value="vip">VIP</option>
+                                        <option value="member">Member</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Expired</label>
+                                    <div style="display:flex;gap:8px;align-items:center;">
+                                        <select id="expiredType" style="flex:1;">
+                                            <option value="custom">Kustom (Kalender)</option>
+                                            <option value="permanen">Permanen</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row" id="datePickerRow">
+                                <div class="form-group">
+                                    <label>Tanggal Expired</label>
+                                    <input type="date" id="expiredDate">
+                                </div>
+                            </div>
+                            <button class="btn-create" id="createAccountBtn">
+                                <i class="fas fa-plus-circle"></i> Buat Akun
+                            </button>
+                        </div>
+
+                        <div class="list-title"><i class="fas fa-users"></i> Daftar Akun</div>
+                        <div id="accountList"></div>
+                    </div>
+                </div>
+
+                <!-- ========== PAGE RIWAYAT ========== -->
+                <div class="page-container" id="pageRiwayat">
+                    <div class="history-list">
+                        <div class="list-title" style="color:rgba(255,255,255,0.3);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+                            <i class="fas fa-history"></i> Riwayat Aktivitas
+                        </div>
+                        <div id="historyList"></div>
+                    </div>
+                </div>
+
+                <!-- ========== PAGE SETELAN ========== -->
+                <div class="page-container" id="pageSetelan">
+                    <div class="settings-list">
+                        <div class="list-title" style="color:rgba(255,255,255,0.3);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+                            <i class="fas fa-cog"></i> Pengaturan
+                        </div>
+                        <div class="settings-item" id="settingDarkMode">
+                            <div class="left">
+                                <i class="fas fa-moon"></i>
+                                <span class="label">Mode Gelap</span>
+                            </div>
+                            <div class="right">
+                                <span id="darkModeStatus">Aktif</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                        <!-- NOTIFIKASI TOGGLE -->
+                        <div class="settings-item" id="settingNotification">
+                            <div class="left">
+                                <i class="fas fa-bell"></i>
+                                <span class="label" id="notifLabel">Notifikasi</span>
+                            </div>
+                            <div class="right">
+                                <div class="notification-toggle" id="notifToggle">
+                                    <div class="toggle-switch active" id="notifSwitch">
+                                        <div class="toggle-dot"></div>
+                                    </div>
+                                    <span class="toggle-label" id="notifStatus">Aktif</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings-item" id="settingLanguage">
+                            <div class="left">
+                                <i class="fas fa-language"></i>
+                                <span class="label">Bahasa</span>
+                            </div>
+                            <div class="right">
+                                <span id="currentLangLabel">Indonesia</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="lang-options" id="langOptions">
+                            <button class="lang-opt active" data-lang="id">🇮🇩 Indonesia</button>
+                            <button class="lang-opt" data-lang="en">🇬🇧 English</button>
+                            <button class="lang-opt" data-lang="es">🇪🇸 Español</button>
+                            <button class="lang-opt" data-lang="fr">🇫🇷 Français</button>
+                        </div>
+                        <div class="settings-item">
+                            <div class="left">
+                                <i class="fas fa-palette"></i>
+                                <span class="label">Tema</span>
+                            </div>
+                            <div class="right">
+                                Pink <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <div class="left">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="label">Versi Aplikasi</span>
+                            </div>
+                            <div class="right">
+                                2.0.0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ NAVIGATION BAR ============ -->
+        <div class="nav-bar" id="navBar">
+            <button class="nav-item active" data-page="home">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </button>
+            <button class="nav-item" data-page="akun">
+                <i class="fas fa-users"></i>
+                <span>Akun</span>
+                <span class="nav-badge" id="navBadge">0</span>
+            </button>
+            <button class="nav-item" data-page="riwayat">
+                <i class="fas fa-history"></i>
+                <span>Riwayat</span>
+                <span class="nav-badge" id="historyBadge">0</span>
+            </button>
+            <button class="nav-item" data-page="setelan">
+                <i class="fas fa-cog"></i>
+                <span>Setelan</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============ LOADING OVERLAY ============ -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div id="loadingState" style="display:flex;flex-direction:column;align-items:center;gap:24px;">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">
+                <span id="loadingTitle">⏳ Memproses...</span>
+            </div>
+            <div class="loading-progress">
+                <div class="bar" id="loadingBar"></div>
+            </div>
+        </div>
+        <div class="loading-done" id="loadingDone">
+            <div class="done-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="done-text">✓ Selesai!</div>
+            <div class="done-sub">Proses berhasil dilakukan</div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        (function() {
+            // ============ OWNER CREDENTIALS ============
+            const OWNER_USER = 'lanzy';
+            const OWNER_PASS = 'king';
+
+            let isLoggedIn = false;
+            let selectedDuration = '1hari';
+            let activeTab = 'ban';
+            let currentPage = 'home';
+            let isProcessing = false;
+            let isDarkMode = true;
+            let currentLang = 'id';
+            let isYTPlaying = false;
+            let splashFinished = false;
+            let currentUser = null;
+            let currentUserRole = 'owner';
+            let currentUserExpired = 'Permanen';
+
+            // ============ NOTIFICATION SETTINGS ============
+            let notificationEnabled = true;
+            let lastActivityTime = Date.now();
+            let reminderInterval = null;
+
+            // ============ DATABASE ============
+            let accounts = [
+                { id: 1, username: 'lanzy', password: 'king', role: 'owner', expired: 'Permanen',
+                    createdBy: 'system' },
+                { id: 2, username: 'budi_handoko', password: 'budi123', role: 'tangan', expired: '2026-08-15',
+                    createdBy: 'lanzy' },
+                { id: 3, username: 'sarah_vip', password: 'sarah123', role: 'vip', expired: '2026-09-01',
+                    createdBy: 'lanzy' },
+                { id: 4, username: 'member_01', password: 'member123', role: 'member', expired: 'Permanen',
+                    createdBy: 'lanzy' }
+            ];
+            let accountIdCounter = 5;
+
+            // ============ HISTORY (per user) ============
+            let allHistoryData = {};
+
+            // ============ STATUS NOMOR ============
+            let numberStatus = {
+                number: '',
+                isBanned: false,
+                lastAction: null,
+                history: []
+            };
+
+            // ============ TRANSLATIONS ============
+            const translations = {
+                id: {
+                    login: 'LOGIN',
+                    username: 'Username',
+                    password: 'Password',
+                    banned: 'BANNED',
+                    unbanned: 'UNBANNED',
+                    execute: 'EKSEKUSI',
+                    logout: 'Logout',
+                    home: 'Beranda',
+                    akun: 'Akun',
+                    riwayat: 'Riwayat',
+                    setelan: 'Setelan',
+                    noAccount: 'Belum ada akun',
+                    createAccount: 'Buat Akun Admin',
+                    owner: 'Owner',
+                    tangan: 'Tangan Kanan',
+                    vip: 'VIP',
+                    member: 'Member',
+                    permanen: 'Permanen',
+                    settings: 'Pengaturan',
+                    darkMode: 'Mode Gelap',
+                    notification: 'Notifikasi',
+                    language: 'Bahasa',
+                    theme: 'Tema',
+                    version: 'Versi Aplikasi',
+                    active: 'Aktif',
+                    nonaktif: 'Nonaktif',
+                    notBlocked: 'Tidak Diblokir',
+                    blocked: 'Diblokir',
+                    activeNumber: 'Nomor aktif dan dapat dihubungi',
+                    cannotSend: 'Nomor tidak dapat mengirim pesan',
+                    for: 'untuk',
+                    openedFrom: 'dibuka dari',
+                    indonesia: 'Indonesia',
+                    english: 'English',
+                    spanish: 'Español',
+                    french: 'Français',
+                    history: 'Riwayat Aktivitas',
+                    accountList: 'Daftar Akun',
+                    settingsDesc: 'Pengaturan',
+                    loginSuccess: 'Login berhasil! Selamat datang',
+                    loginFailed: 'Username atau password salah!',
+                    checkNumber: 'Cek Nomor',
+                    notChecked: 'Belum Dicek',
+                    numberActive: 'AKTIF',
+                    numberBanned: 'TERBANNED',
+                    numberActiveDesc: 'Nomor aktif dan dapat dihubungi',
+                    numberBannedDesc: 'Nomor sedang dalam status banned',
+                    checkNow: 'Klik tombol Cek Nomor untuk memeriksa status',
+                    bannedHistory: 'Pernah di Banned',
+                    unbannedHistory: 'Pernah di Unbanned',
+                    noHistory: 'Belum ada riwayat aktivitas',
+                    bannedDuration: 'Durasi Banned',
+                    unbannedDuration: 'Durasi Unbanned',
+                    by: 'oleh',
+                    expired: 'Expired',
+                    customDate: 'Kustom (Kalender)',
+                    permanenLabel: 'Permanen',
+                    notifOn: 'Notifikasi Aktif',
+                    notifOff: 'Notifikasi Nonaktif',
+                    notifBanned: '🔴 Nomor {number} telah di BANNED!',
+                    notifUnbanned: '🟢 Nomor {number} telah di UNBANNED!',
+                    notifReminder: '🔥 Ayo login ke aplikasi kita siap nyambut😈',
+                    notifReminderTitle: '自由 - Ada yang nunggu nih!',
+                    onlyOwnerCanSee: 'Hanya Owner yang bisa melihat semua akun',
+                    yourAccounts: 'Akun yang Anda buat'
+                },
+                en: {
+                    login: 'LOGIN',
+                    username: 'Username',
+                    password: 'Password',
+                    banned: 'BANNED',
+                    unbanned: 'UNBANNED',
+                    execute: 'EXECUTE',
+                    logout: 'Logout',
+                    home: 'Home',
+                    akun: 'Accounts',
+                    riwayat: 'History',
+                    setelan: 'Settings',
+                    noAccount: 'No accounts yet',
+                    createAccount: 'Create Admin Account',
+                    owner: 'Owner',
+                    tangan: 'Right Hand',
+                    vip: 'VIP',
+                    member: 'Member',
+                    permanen: 'Permanent',
+                    settings: 'Settings',
+                    darkMode: 'Dark Mode',
+                    notification: 'Notification',
+                    language: 'Language',
+                    theme: 'Theme',
+                    version: 'App Version',
+                    active: 'Active',
+                    nonaktif: 'Inactive',
+                    notBlocked: 'Not Blocked',
+                    blocked: 'Blocked',
+                    activeNumber: 'Number active and can be contacted',
+                    cannotSend: 'Number cannot send messages',
+                    for: 'for',
+                    openedFrom: 'opened from',
+                    indonesia: 'Indonesia',
+                    english: 'English',
+                    spanish: 'Spanish',
+                    french: 'French',
+                    history: 'Activity History',
+                    accountList: 'Account List',
+                    settingsDesc: 'Settings',
+                    loginSuccess: 'Login successful! Welcome',
+                    loginFailed: 'Username or password is wrong!',
+                    checkNumber: 'Check Number',
+                    notChecked: 'Not Checked',
+                    numberActive: 'ACTIVE',
+                    numberBanned: 'BANNED',
+                    numberActiveDesc: 'Number is active and can be contacted',
+                    numberBannedDesc: 'Number is currently banned',
+                    checkNow: 'Click Check Number button to check status',
+                    bannedHistory: 'Has been Banned',
+                    unbannedHistory: 'Has been Unbanned',
+                    noHistory: 'No activity history yet',
+                    bannedDuration: 'Banned Duration',
+                    unbannedDuration: 'Unbanned Duration',
+                    by: 'by',
+                    expired: 'Expired',
+                    customDate: 'Custom (Calendar)',
+                    permanenLabel: 'Permanent',
+                    notifOn: 'Notification On',
+                    notifOff: 'Notification Off',
+                    notifBanned: '🔴 Number {number} has been BANNED!',
+                    notifUnbanned: '🟢 Number {number} has been UNBANNED!',
+                    notifReminder: '🔥 Come login to our app, we\'re ready😈',
+                    notifReminderTitle: '自由 - Someone is waiting!',
+                    onlyOwnerCanSee: 'Only Owner can see all accounts',
+                    yourAccounts: 'Your created accounts'
+                },
+                es: {
+                    login: 'INICIAR SESIÓN',
+                    username: 'Usuario',
+                    password: 'Contraseña',
+                    banned: 'BANEADO',
+                    unbanned: 'DESBANEADO',
+                    execute: 'EJECUTAR',
+                    logout: 'Cerrar sesión',
+                    home: 'Inicio',
+                    akun: 'Cuentas',
+                    riwayat: 'Historial',
+                    setelan: 'Ajustes',
+                    noAccount: 'Sin cuentas aún',
+                    createAccount: 'Crear Cuenta Admin',
+                    owner: 'Propietario',
+                    tangan: 'Mano Derecha',
+                    vip: 'VIP',
+                    member: 'Miembro',
+                    permanen: 'Permanente',
+                    settings: 'Ajustes',
+                    darkMode: 'Modo Oscuro',
+                    notification: 'Notificación',
+                    language: 'Idioma',
+                    theme: 'Tema',
+                    version: 'Versión App',
+                    active: 'Activo',
+                    nonaktif: 'Inactivo',
+                    notBlocked: 'No Bloqueado',
+                    blocked: 'Bloqueado',
+                    activeNumber: 'Número activo y contactable',
+                    cannotSend: 'El número no puede enviar mensajes',
+                    for: 'para',
+                    openedFrom: 'abierto desde',
+                    indonesia: 'Indonesia',
+                    english: 'Inglés',
+                    spanish: 'Español',
+                    french: 'Francés',
+                    history: 'Historial de Actividad',
+                    accountList: 'Lista de Cuentas',
+                    settingsDesc: 'Ajustes',
+                    loginSuccess: '¡Inicio de sesión exitoso! Bienvenido',
+                    loginFailed: '¡Usuario o contraseña incorrectos!',
+                    checkNumber: 'Verificar Número',
+                    notChecked: 'No Verificado',
+                    numberActive: 'ACTIVO',
+                    numberBanned: 'BANEADO',
+                    numberActiveDesc: 'Número activo y se puede contactar',
+                    numberBannedDesc: 'El número está actualmente baneado',
+                    checkNow: 'Haga clic en Verificar Número para comprobar el estado',
+                    bannedHistory: 'Ha sido baneado',
+                    unbannedHistory: 'Ha sido desbaneado',
+                    noHistory: 'Sin historial de actividad aún',
+                    bannedDuration: 'Duración del baneo',
+                    unbannedDuration: 'Duración del desbaneo',
+                    by: 'por',
+                    expired: 'Expirado',
+                    customDate: 'Personalizado (Calendario)',
+                    permanenLabel: 'Permanente',
+                    notifOn: 'Notificación Activada',
+                    notifOff: 'Notificación Desactivada',
+                    notifBanned: '🔴 ¡El número {number} ha sido BANEADO!',
+                    notifUnbanned: '🟢 ¡El número {number} ha sido DESBANEADO!',
+                    notifReminder: '🔥 ¡Ven a iniciar sesión en nuestra aplicación, estamos listos😈',
+                    notifReminderTitle: '自由 - ¡Alguien te espera!',
+                    onlyOwnerCanSee: 'Solo el Propietario puede ver todas las cuentas',
+                    yourAccounts: 'Tus cuentas creadas'
+                },
+                fr: {
+                    login: 'SE CONNECTER',
+                    username: "Nom d'utilisateur",
+                    password: 'Mot de passe',
+                    banned: 'BANNI',
+                    unbanned: 'DÉBANNI',
+                    execute: 'EXÉCUTER',
+                    logout: 'Déconnexion',
+                    home: 'Accueil',
+                    akun: 'Comptes',
+                    riwayat: 'Historique',
+                    setelan: 'Paramètres',
+                    noAccount: 'Aucun compte',
+                    createAccount: 'Créer un compte Admin',
+                    owner: 'Propriétaire',
+                    tangan: 'Main Droite',
+                    vip: 'VIP',
+                    member: 'Membre',
+                    permanen: 'Permanent',
+                    settings: 'Paramètres',
+                    darkMode: 'Mode Sombre',
+                    notification: 'Notification',
+                    language: 'Langue',
+                    theme: 'Thème',
+                    version: 'Version App',
+                    active: 'Actif',
+                    nonaktif: 'Inactif',
+                    notBlocked: 'Non Bloqué',
+                    blocked: 'Bloqué',
+                    activeNumber: 'Numéro actif et joignable',
+                    cannotSend: 'Le numéro ne peut pas envoyer de messages',
+                    for: 'pour',
+                    openedFrom: 'ouvert depuis',
+                    indonesia: 'Indonésien',
+                    english: 'Anglais',
+                    spanish: 'Espagnol',
+                    french: 'Français',
+                    history: "Historique d'activité",
+                    accountList: 'Liste des comptes',
+                    settingsDesc: 'Paramètres',
+                    loginSuccess: 'Connexion réussie! Bienvenue',
+                    loginFailed: 'Nom d\'utilisateur ou mot de passe incorrect!',
+                    checkNumber: 'Vérifier le numéro',
+                    notChecked: 'Non vérifié',
+                    numberActive: 'ACTIF',
+                    numberBanned: 'BANNI',
+                    numberActiveDesc: 'Numéro actif et joignable',
+                    numberBannedDesc: 'Le numéro est actuellement banni',
+                    checkNow: 'Cliquez sur Vérifier le numéro pour vérifier le statut',
+                    bannedHistory: 'A été banni',
+                    unbannedHistory: 'A été débanni',
+                    noHistory: "Pas d'historique d'activité",
+                    bannedDuration: 'Durée du bannissement',
+                    unbannedDuration: 'Durée du débannissement',
+                    by: 'par',
+                    expired: 'Expiré',
+                    customDate: 'Personnalisé (Calendrier)',
+                    permanenLabel: 'Permanent',
+                    notifOn: 'Notification Activée',
+                    notifOff: 'Notification Désactivée',
+                    notifBanned: '🔴 Le numéro {number} a été BANNI!',
+                    notifUnbanned: '🟢 Le numéro {number} a été DÉBANNI!',
+                    notifReminder: '🔥 Venez vous connecter à notre application, on est prêts😈',
+                    notifReminderTitle: '自由 - Quelqu\'un vous attend!',
+                    onlyOwnerCanSee: 'Seul le propriétaire peut voir tous les comptes',
+                    yourAccounts: 'Vos comptes créés'
+                }
+            };
+
+            // ============ DOM ELEMENTS ============
+            const loginPage = document.getElementById('loginPage');
+            const mainApp = document.getElementById('mainApp');
+            const loginUser = document.getElementById('loginUser');
+            const loginPass = document.getElementById('loginPass');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginError = document.getElementById('loginError');
+            const togglePass = document.getElementById('togglePass');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const displayName = document.getElementById('displayName');
+            const displayRole = document.getElementById('displayRole');
+            const displayExpired = document.getElementById('displayExpired');
+            const contentWrapper = document.getElementById('contentWrapper');
+            const modeToggle = document.getElementById('modeToggle');
+            const toggleThumb = document.getElementById('toggleThumb');
+
+            const bgVideo = document.getElementById('bgVideo');
+            const overlayBg = document.getElementById('overlayBg');
+
+            const splashScreen = document.getElementById('splashScreen');
+            const splashVideo = document.getElementById('splashVideo');
+            const skipBtn = document.getElementById('skipBtn');
+
+            const playerVideo = document.getElementById('playerVideo');
+            const playOverlay = document.getElementById('playOverlay');
+            const videoWrapper = document.getElementById('videoWrapper');
+
+            const tabBan = document.getElementById('tabBan');
+            const tabUnban = document.getElementById('tabUnban');
+            const durationBtns = document.querySelectorAll('.duration-btn');
+            const waInput = document.getElementById('waNumber');
+            const statusCard = document.getElementById('statusCard');
+            const statusIcon = document.getElementById('statusIcon');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusDesc = document.getElementById('statusDesc');
+            const executeBtn = document.getElementById('executeBtn');
+            const checkBtn = document.getElementById('checkBtn');
+            const checkStatus = document.getElementById('checkStatus');
+            const navItems = document.querySelectorAll('.nav-item');
+            const navBadge = document.getElementById('navBadge');
+            const historyBadge = document.getElementById('historyBadge');
+            const toast = document.getElementById('toast');
+            const navBar = document.getElementById('navBar');
+
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingState = document.getElementById('loadingState');
+            const loadingDone = document.getElementById('loadingDone');
+            const loadingTitle = document.getElementById('loadingTitle');
+            const loadingBar = document.getElementById('loadingBar');
+
+            const settingDarkMode = document.getElementById('settingDarkMode');
+            const darkModeStatus = document.getElementById('darkModeStatus');
+            const settingNotification = document.getElementById('settingNotification');
+            const notifSwitch = document.getElementById('notifSwitch');
+            const notifStatus = document.getElementById('notifStatus');
+            const settingLanguage = document.getElementById('settingLanguage');
+            const langOptions = document.getElementById('langOptions');
+            const currentLangLabel = document.getElementById('currentLangLabel');
+            const langOpts = document.querySelectorAll('.lang-opt');
+
+            const newUsername = document.getElementById('newUsername');
+            const newPassword = document.getElementById('newPassword');
+            const newRole = document.getElementById('newRole');
+            const expiredType = document.getElementById('expiredType');
+            const expiredDate = document.getElementById('expiredDate');
+            const datePickerRow = document.getElementById('datePickerRow');
+            const createAccountBtn = document.getElementById('createAccountBtn');
+            const accountList = document.getElementById('accountList');
+            const historyList = document.getElementById('historyList');
+
+            const loginLangBtns = document.querySelectorAll('.lang-selector .lang-btn');
+
+            const pages = {
+                home: document.getElementById('pageHome'),
+                akun: document.getElementById('pageAkun'),
+                riwayat: document.getElementById('pageRiwayat'),
+                setelan: document.getElementById('pageSetelan')
+            };
+
+            let toastTimeout = null;
+            let passVisible = false;
+
+            // ============ SET DEFAULT DATE ============
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            expiredDate.value = tomorrow.toISOString().split('T')[0];
+
+            // ============ TOGGLE DATE PICKER ============
+            expiredType.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    datePickerRow.style.display = 'flex';
+                } else {
+                    datePickerRow.style.display = 'none';
+                }
+            });
+
+            // ============ NOTIFICATION FUNCTIONS ============
+            function requestNotificationPermission() {
+                if (!('Notification' in window)) {
+                    console.log('Browser tidak support notifikasi');
+                    return;
+                }
+                if (Notification.permission === 'default') {
+                    Notification.requestPermission().then(function(permission) {
+                        if (permission === 'granted') {
+                            console.log('Notifikasi diizinkan');
+                        }
+                    });
+                }
+            }
+
+            function sendNotification(title, body) {
+                if (!notificationEnabled) return;
+                if (!('Notification' in window)) return;
+                if (Notification.permission !== 'granted') return;
+
+                try {
+                    const notif = new Notification(title, {
+                        body: body,
+                        icon: 'https://img.icons8.com/color/96/whatsapp--v1.png',
+                        vibrate: [200, 100, 200],
+                        requireInteraction: true
+                    });
+
+                    setTimeout(() => { notif.close(); }, 10000);
+                } catch (e) {
+                    console.log('Error notifikasi:', e);
+                }
+            }
+
+            function updateNotifUI() {
+                if (notificationEnabled) {
+                    notifSwitch.classList.add('active');
+                    const t = getTranslation();
+                    notifStatus.textContent = t.notifOn || 'Aktif';
+                } else {
+                    notifSwitch.classList.remove('active');
+                    const t = getTranslation();
+                    notifStatus.textContent = t.notifOff || 'Nonaktif';
+                }
+                localStorage.setItem('wa_notification', notificationEnabled ? 'on' : 'off');
+            }
+
+            // ============ NOTIFICATION REMINDER 1 HARI ============
+            function startReminderCheck() {
+                if (reminderInterval) clearInterval(reminderInterval);
+
+                reminderInterval = setInterval(function() {
+                    const now = Date.now();
+                    const diff = now - lastActivityTime;
+
+                    // 1 hari = 24 jam = 86400000 ms
+                    if (diff > 86400000 && notificationEnabled) {
+                        const t = getTranslation();
+                        sendNotification(t.notifReminderTitle || '自由 - Ada yang nunggu nih!',
+                            t.notifReminder || '🔥 Ayo login ke aplikasi kita siap nyambut😈');
+                        // Reset timer agar tidak spam
+                        lastActivityTime = now;
+                    }
+                }, 60000); // Cek setiap menit
+            }
+
+            // ============ GET TRANSLATION ============
+            function getTranslation() {
+                return translations[currentLang] || translations.id;
+            }
+
+            // ============ TOAST ============
+            function showToast(message, type = 'success') {
+                toast.textContent = message;
+                toast.className = 'toast ' + type;
+                setTimeout(() => { toast.classList.add('show'); }, 10);
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            }
+
+            // ============ GET TIME ============
+            function getTimeNow() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const year = now.getFullYear();
+                return `${hours}:${minutes} - ${day}/${month}/${year}`;
+            }
+
+            // ============ FORMAT DATE ============
+            function formatDateDisplay(dateStr) {
+                if (!dateStr || dateStr === 'Permanen') return '♾️ Permanen';
+                try {
+                    const d = new Date(dateStr);
+                    if (isNaN(d.getTime())) return dateStr;
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                    const year = d.getFullYear();
+                    return `📅 ${day}/${month}/${year}`;
+                } catch (e) {
+                    return dateStr;
+                }
+            }
+
+            function isExpired(dateStr) {
+                if (!dateStr || dateStr === 'Permanen') return false;
+                try {
+                    const d = new Date(dateStr);
+                    if (isNaN(d.getTime())) return false;
+                    return d < new Date();
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            // ============ ACCOUNT FUNCTIONS ============
+            function findAccount(username, password) {
+                return accounts.find(a => a.username === username && a.password === password);
+            }
+
+            function findAccountByUsername(username) {
+                return accounts.find(a => a.username === username);
+            }
+
+            function isAccountExpired(account) {
+                if (!account || account.role === 'owner') return false;
+                if (account.expired === 'Permanen') return false;
+                try {
+                    const d = new Date(account.expired);
+                    if (isNaN(d.getTime())) return false;
+                    return d < new Date();
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            // ============ RENDER ACCOUNTS (dengan filter role) ============
+            function renderAccounts() {
+                const t = getTranslation();
+
+                // Filter expired accounts
+                const now = new Date();
+                accounts = accounts.filter(acc => {
+                    if (acc.role === 'owner') return true;
+                    if (acc.expired === 'Permanen') return true;
+                    try {
+                        const d = new Date(acc.expired);
+                        if (isNaN(d.getTime())) return true;
+                        return d >= now;
+                    } catch (e) {
+                        return true;
+                    }
+                });
+
+                // Filter berdasarkan role
+                let filteredAccounts = [];
+                if (currentUserRole === 'owner') {
+                    // Owner bisa lihat SEMUA akun
+                    filteredAccounts = accounts;
+                } else {
+                    // Role lain hanya lihat akun yang mereka buat sendiri
+                    filteredAccounts = accounts.filter(acc => acc.createdBy === currentUser);
+                }
+
+                if (filteredAccounts.length === 0) {
+                    let emptyMessage = t.noAccount;
+                    if (currentUserRole !== 'owner') {
+                        emptyMessage = t.yourAccounts + ': ' + t.noAccount;
+                    }
+                    accountList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-user-slash"></i>
+                            ${emptyMessage}
+                        </div>
+                    `;
+                    navBadge.textContent = '0';
+                    return;
+                }
+
+                const roleLabels = {
+                    owner: t.owner || 'Owner',
+                    tangan: t.tangan || 'Tangan Kanan',
+                    vip: t.vip || 'VIP',
+                    member: t.member || 'Member'
+                };
+                const roleClasses = {
+                    owner: 'role-owner',
+                    tangan: 'role-tangan',
+                    vip: 'role-vip',
+                    member: 'role-member'
+                };
+
+                let html = '';
+                filteredAccounts.forEach(acc => {
+                    const isOwner = acc.role === 'owner';
+                    const isCurrentUser = currentUser === acc.username;
+                    const expDisplay = isOwner ? '👑 Owner' : (acc.expired === 'Permanen' ? '♾️ Permanen' :
+                        formatDateDisplay(acc.expired));
+                    const isExp = isExpired(acc.expired) && !isOwner;
+
+                    html += `
+                        <div class="account-item" style="${isExp ? 'border-color:rgba(244,114,182,0.2);' : ''}">
+                            <div class="info">
+                                <div class="name">${acc.username} ${isCurrentUser ? '⭐' : ''} ${isExp ? '⚠️' : ''}</div>
+                                <span class="role ${roleClasses[acc.role] || ''}">${roleLabels[acc.role] || acc.role}</span>
+                                <div class="expired">${expDisplay}</div>
+                            </div>
+                            <div class="actions">
+                                ${isOwner ? `
+                                    <button class="btn-edit"><i class="fas fa-edit"></i></button>
+                                ` : `
+                                    <button class="btn-edit" onclick="editAccount(${acc.id})"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-delete" onclick="deleteAccount(${acc.id})"><i class="fas fa-trash"></i></button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                accountList.innerHTML = html;
+                navBadge.textContent = filteredAccounts.length;
+            }
+
+            // ============ CREATE ACCOUNT ============
+            function createAccount() {
+                const t = getTranslation();
+                const username = newUsername.value.trim();
+                const password = newPassword.value.trim();
+                const role = newRole.value;
+                const expType = expiredType.value;
+                let expired = '';
+
+                if (expType === 'custom') {
+                    expired = expiredDate.value;
+                    if (!expired) {
+                        showToast('Pilih tanggal expired!', 'error');
+                        return;
+                    }
+                    const now = new Date();
+                    now.setHours(0, 0, 0, 0);
+                    const expDate = new Date(expired);
+                    if (expDate < now) {
+                        showToast('Tanggal expired tidak boleh kurang dari hari ini!', 'error');
+                        return;
+                    }
+                } else {
+                    expired = 'Permanen';
+                }
+
+                if (!username || !password) {
+                    showToast('Username dan password wajib diisi!', 'error');
+                    return;
+                }
+
+                if (findAccountByUsername(username)) {
+                    showToast('Username sudah digunakan!', 'error');
+                    return;
+                }
+
+                const roleHierarchy = ['owner', 'tangan', 'partner', 'vip', 'member'];
+                const userRoleIndex = roleHierarchy.indexOf(currentUserRole);
+                const newRoleIndex = roleHierarchy.indexOf(role);
+
+                if (newRoleIndex <= userRoleIndex && currentUserRole !== 'owner') {
+                    showToast('⚠️ Anda tidak memiliki izin untuk membuat role ini!', 'error');
+                    return;
+                }
+
+                if (currentUserRole !== 'owner' && (role === 'owner' || role === 'tangan' && currentUserRole !==
+                    'owner')) {
+                    showToast('⚠️ Anda hanya bisa membuat akun setara ke bawah!', 'error');
+                    return;
+                }
+
+                accounts.push({
+                    id: accountIdCounter++,
+                    username: username,
+                    password: password,
+                    role: role,
+                    expired: expired,
+                    createdBy: currentUser || 'system'
+                });
+
+                renderAccounts();
+                showToast(`✅ Akun ${username} (${role}) berhasil dibuat! Expired: ${expired === 'Permanen' ? 'Permanen' : formatDateDisplay(expired)}`,
+                    'success');
+                newUsername.value = '';
+                newPassword.value = '';
+                expiredDate.value = tomorrow.toISOString().split('T')[0];
+                expiredType.value = 'custom';
+                datePickerRow.style.display = 'flex';
+            }
+
+            window.editAccount = function(id) {
+                const acc = accounts.find(a => a.id === id);
+                if (!acc || acc.role === 'owner') return;
+
+                if (currentUserRole !== 'owner' && acc.createdBy !== currentUser) {
+                    showToast('⚠️ Anda hanya bisa mengedit akun yang Anda buat!', 'error');
+                    return;
+                }
+
+                const newRole = prompt('Role baru (tangan/vip/member):', acc.role);
+                if (newRole && ['tangan', 'vip', 'member'].includes(newRole)) {
+                    acc.role = newRole;
+                }
+
+                const newExp = prompt('Expired baru (YYYY-MM-DD atau permanen):', acc.expired);
+                if (newExp) {
+                    if (newExp.toLowerCase() === 'permanen') {
+                        acc.expired = 'Permanen';
+                    } else if (/^\d{4}-\d{2}-\d{2}$/.test(newExp)) {
+                        const now = new Date();
+                        now.setHours(0, 0, 0, 0);
+                        const expDate = new Date(newExp);
+                        if (expDate < now) {
+                            showToast('Tanggal expired tidak boleh kurang dari hari ini!', 'error');
+                        } else {
+                            acc.expired = newExp;
+                        }
+                    } else {
+                        showToast('Format tanggal salah! Gunakan YYYY-MM-DD', 'error');
+                    }
+                }
+                renderAccounts();
+                showToast('✅ Akun diperbarui!', 'success');
+            };
+
+            window.deleteAccount = function(id) {
+                const acc = accounts.find(a => a.id === id);
+                if (!acc) return;
+                if (acc.role === 'owner') {
+                    showToast('❌ Tidak bisa menghapus Owner!', 'error');
+                    return;
+                }
+                if (currentUserRole !== 'owner' && acc.createdBy !== currentUser) {
+                    showToast('⚠️ Anda hanya bisa menghapus akun yang Anda buat!', 'error');
+                    return;
+                }
+                accounts = accounts.filter(a => a.id !== id);
+                renderAccounts();
+                showToast(`✅ Akun ${acc.username} dihapus!`, 'warning');
+            };
+
+            // ============ HISTORY FUNCTIONS (per user) ============
+            function addHistory(action, number, duration, user) {
+                const t = getTranslation();
+                if (!allHistoryData[user]) {
+                    allHistoryData[user] = [];
+                }
+
+                const entry = {
+                    id: Date.now(),
+                    action: action,
+                    number: number,
+                    duration: duration,
+                    user: user || currentUser || 'system',
+                    time: new Date().toISOString(),
+                    timeDisplay: getTimeNow()
+                };
+
+                allHistoryData[user].unshift(entry);
+                renderHistory();
+                updateHistoryBadge();
+
+                // Kirim notifikasi
+                const title = action === 'banned' ? '🔴 Banned!' : '🟢 Unbanned!';
+                const body = action === 'banned' ?
+                    `Nomor ${number} telah di BANNED! (${duration})` :
+                    `Nomor ${number} telah di UNBANNED! (${duration})`;
+                sendNotification(`自由 - ${title}`, body);
+
+                return entry;
+            }
+
+            function getHistoryForUser(username) {
+                return allHistoryData[username] || [];
+            }
+
+            function renderHistory() {
+                const t = getTranslation();
+                const userHistory = getHistoryForUser(currentUser);
+
+                if (userHistory.length === 0) {
+                    historyList.innerHTML = `
+                        <div class="history-empty">
+                            <i class="fas fa-clock"></i>
+                            ${t.noHistory}
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                userHistory.forEach(item => {
+                    const isBanned = item.action === 'banned';
+                    const icon = isBanned ? 'fa-ban' : 'fa-check-circle';
+                    const iconColor = isBanned ? '#f472b6' : '#34d399';
+                    const actionLabel = isBanned ? t.bannedHistory : t.unbannedHistory;
+                    const durLabel = isBanned ? t.bannedDuration : t.unbannedDuration;
+
+                    html += `
+                        <div class="history-item">
+                            <div class="icon" style="background:${isBanned ? 'rgba(244,114,182,0.06)' : 'rgba(52,211,153,0.06)'}; color:${iconColor};">
+                                <i class="fas ${icon}"></i>
+                            </div>
+                            <div class="info">
+                                <div class="title">
+                                    ${actionLabel} <strong>${item.number}</strong>
+                                    <span style="font-size:12px;color:rgba(255,255,255,0.2);font-weight:400;margin-left:4px;">
+                                        (${durLabel}: ${item.duration})
+                                    </span>
+                                </div>
+                                <div class="time">
+                                    ${item.timeDisplay} • ${t.by} ${item.user}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                historyList.innerHTML = html;
+            }
+
+            function updateHistoryBadge() {
+                const userHistory = getHistoryForUser(currentUser);
+                if (historyBadge) {
+                    historyBadge.textContent = userHistory.length;
+                }
+            }
+
+            // ============ CEK NOMOR ============
+            function checkNumber() {
+                const t = getTranslation();
+                const number = waInput.value.trim();
+
+                if (!number) {
+                    showToast('Masukkan nomor WhatsApp terlebih dahulu!', 'error');
+                    waInput.focus();
+                    return;
+                }
+
+                // Cek di history semua user (global)
+                let allBannedHistory = [];
+                let allUnbannedHistory = [];
+
+                for (const user in allHistoryData) {
+                    const history = allHistoryData[user];
+                    history.forEach(h => {
+                        if (h.number === number && h.action === 'banned') {
+                            allBannedHistory.push(h);
+                        }
+                        if (h.number === number && h.action === 'unbanned') {
+                            allUnbannedHistory.push(h);
+                        }
+                    });
+                }
+
+                // Sort by time
+                allBannedHistory.sort((a, b) => new Date(b.time) - new Date(a.time));
+                allUnbannedHistory.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+                let isBanned = false;
+                if (allBannedHistory.length > 0) {
+                    const lastBanned = allBannedHistory[0];
+                    const afterLastBanned = allUnbannedHistory.filter(h => new Date(h.time) > new Date(lastBanned
+                    .time));
+                    if (afterLastBanned.length === 0) {
+                        isBanned = true;
+                    } else {
+                        isBanned = false;
+                    }
+                } else {
+                    isBanned = false;
+                }
+
+                if (isBanned) {
+                    statusCard.classList.remove('status-check', 'status-unbanned');
+                    statusCard.classList.add('status-banned');
+                    statusIcon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                    statusTitle.textContent = `🚫 ${t.numberBanned}`;
+                    statusDesc.textContent =
+                        `${t.numberBannedDesc} (${t.bannedDuration}: ${allBannedHistory[0]?.duration || 'Unknown'})`;
+                    checkStatus.textContent = t.numberBanned;
+                    checkStatus.className = 'status-badge banned';
+                    showToast(`❌ Nomor ${number} TERBANNED!`, 'error');
+                } else if (allBannedHistory.length > 0) {
+                    statusCard.classList.remove('status-check', 'status-banned');
+                    statusCard.classList.add('status-unbanned');
+                    statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                    statusTitle.textContent = `✅ ${t.numberActive}`;
+                    const lastUnbanned = allUnbannedHistory[0];
+                    if (lastUnbanned) {
+                        statusDesc.textContent = `${t.numberActiveDesc} (${t.unbannedHistory} ${t.by} ${lastUnbanned.user})`;
+                    } else {
+                        statusDesc.textContent = t.numberActiveDesc;
+                    }
+                    checkStatus.textContent = t.numberActive;
+                    checkStatus.className = 'status-badge active';
+                    showToast(`✅ Nomor ${number} AKTIF`, 'success');
+                } else {
+                    statusCard.classList.remove('status-banned', 'status-unbanned');
+                    statusCard.classList.add('status-check');
+                    statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                    statusTitle.textContent = `✅ ${t.numberActive}`;
+                    statusDesc.textContent = t.numberActiveDesc + ' (Belum pernah di banned)';
+                    checkStatus.textContent = t.numberActive;
+                    checkStatus.className = 'status-badge active';
+                    showToast(`✅ Nomor ${number} AKTIF`, 'success');
+                }
+            }
+
+            // ============ VIDEO PLAYER ============
+            function startYT() {
+                if (currentPage === 'home' && isLoggedIn && splashFinished) {
+                    playerVideo.muted = false;
+                    playerVideo.play().catch(function(err) {});
+                    playOverlay.classList.add('hidden');
+                    isYTPlaying = true;
+                }
+            }
+
+            function pauseYT() {
+                if (!playerVideo.paused) {
+                    playerVideo.pause();
+                    isYTPlaying = false;
+                }
+                playOverlay.classList.remove('hidden');
+            }
+
+            function stopYT() {
+                playerVideo.pause();
+                playerVideo.currentTime = 0;
+                isYTPlaying = false;
+                playOverlay.classList.remove('hidden');
+            }
+
+            playOverlay.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (currentPage === 'home' && splashFinished) {
+                    if (playerVideo.paused) {
+                        playerVideo.muted = false;
+                        playerVideo.play().catch(function(err) {});
+                        playOverlay.classList.add('hidden');
+                        isYTPlaying = true;
+                    }
+                }
+            });
+
+            playerVideo.addEventListener('play', function() {
+                playOverlay.classList.add('hidden');
+                isYTPlaying = true;
+            });
+
+            // ============ SPLASH ============
+            function showSplash() {
+                splashScreen.classList.add('show');
+                skipBtn.classList.add('show');
+                splashVideo.muted = false;
+                splashVideo.play().catch(function(err) {});
+                splashFinished = false;
+            }
+
+            function hideSplash() {
+                splashVideo.pause();
+                splashVideo.currentTime = 0;
+                splashFinished = true;
+                splashScreen.classList.remove('show');
+                skipBtn.classList.remove('show');
+                bgVideo.play().catch(function(err) {});
+                bgVideo.classList.add('show');
+                overlayBg.classList.add('show');
+                setTimeout(function() {
+                    if (currentPage === 'home' && isLoggedIn) {
+                        startYT();
+                    }
+                }, 500);
+            }
+
+            splashVideo.addEventListener('ended', function() {
+                hideSplash();
+            });
+
+            skipBtn.addEventListener('click', function() {
+                hideSplash();
+            });
+
+            // ============ NAVIGATION ============
+            function navigateTo(page) {
+                if (currentPage === 'home' && page !== 'home') {
+                    pauseYT();
+                }
+
+                Object.keys(pages).forEach(key => {
+                    pages[key].classList.remove('active');
+                });
+                if (pages[page]) {
+                    pages[page].classList.add('active');
+                }
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.page === page) {
+                        item.classList.add('active');
+                    }
+                });
+                currentPage = page;
+
+                if (page === 'home' && isLoggedIn && splashFinished) {
+                    setTimeout(function() {
+                        startYT();
+                    }, 400);
+                }
+
+                toggleVideoWrapper(page === 'home');
+            }
+
+            function toggleVideoWrapper(show) {
+                if (show) {
+                    videoWrapper.classList.add('show');
+                } else {
+                    videoWrapper.classList.remove('show');
+                }
+            }
+
+            // ============ MODE TOGGLE ============
+            modeToggle.addEventListener('click', function() {
+                isDarkMode = !isDarkMode;
+                updateMode();
+                localStorage.setItem('wa_mode', isDarkMode ? 'dark' : 'light');
+            });
+
+            function updateMode() {
+                if (isDarkMode) {
+                    contentWrapper.classList.remove('mode-light');
+                    contentWrapper.classList.add('mode-dark');
+                    toggleThumb.classList.remove('light');
+                    if (darkModeStatus) darkModeStatus.textContent = translations[currentLang]?.active || 'Aktif';
+                } else {
+                    contentWrapper.classList.remove('mode-dark');
+                    contentWrapper.classList.add('mode-light');
+                    toggleThumb.classList.add('light');
+                    if (darkModeStatus) darkModeStatus.textContent = translations[currentLang]?.nonaktif || 'Nonaktif';
+                }
+            }
+
+            const savedMode = localStorage.getItem('wa_mode');
+            if (savedMode === 'light') {
+                isDarkMode = false;
+                updateMode();
+            }
+
+            if (settingDarkMode) {
+                settingDarkMode.addEventListener('click', function() {
+                    modeToggle.click();
+                });
+            }
+
+            // ============ NOTIFICATION TOGGLE ============
+            if (notifSwitch) {
+                notifSwitch.addEventListener('click', function() {
+                    notificationEnabled = !notificationEnabled;
+                    updateNotifUI();
+                    const t = getTranslation();
+                    showToast(notificationEnabled ? '🔔 Notifikasi Aktif' : '🔕 Notifikasi Nonaktif', 'success');
+                    localStorage.setItem('wa_notification', notificationEnabled ? 'on' : 'off');
+                });
+            }
+
+            // Load notifikasi preference
+            const savedNotif = localStorage.getItem('wa_notification');
+            if (savedNotif === 'off') {
+                notificationEnabled = false;
+                updateNotifUI();
+            }
+
+            // ============ LANGUAGE ============
+            function updateLanguageUI() {
+                const t = getTranslation();
+                loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> ${t.login}`;
+                loginUser.placeholder = t.username;
+                loginPass.placeholder = t.password;
+                tabBan.innerHTML = `<i class="fas fa-ban"></i> ${t.banned}`;
+                tabUnban.innerHTML = `<i class="fas fa-check-circle"></i> ${t.unbanned}`;
+                executeBtn.innerHTML = `<i class="fas fa-bolt"></i> ${t.execute}`;
+                logoutBtn.innerHTML = `<i class="fas fa-sign-out-alt"></i> ${t.logout}`;
+                checkBtn.innerHTML =
+                    `<i class="fas fa-search"></i> ${t.checkNumber} <span class="status-badge unknown" id="checkStatus">${t.notChecked}</span>`;
+
+                // Update nav
+                document.querySelector('.nav-item[data-page="home"] span').textContent = t.home;
+                document.querySelector('.nav-item[data-page="akun"] span').textContent = t.akun;
+                document.querySelector('.nav-item[data-page="riwayat"] span').textContent = t.riwayat;
+                document.querySelector('.nav-item[data-page="setelan"] span').textContent = t.setelan;
+
+                // Akun page
+                const akunTitle = document.querySelector('#pageAkun .list-title');
+                if (akunTitle) akunTitle.innerHTML = `<i class="fas fa-users"></i> ${t.accountList || t.akun}`;
+                const boxTitle = document.querySelector('#pageAkun .box-title');
+                if (boxTitle) boxTitle.innerHTML = `<i class="fas fa-user-plus"></i> ${t.createAccount}`;
+                const usernameLabels = document.querySelectorAll('#pageAkun .form-group label');
+                if (usernameLabels.length >= 2) {
+                    usernameLabels[0].textContent = t.username;
+                    usernameLabels[1].textContent = t.password;
+                }
+                const expiredLabel = document.querySelector('#pageAkun .expired-label');
+                if (expiredLabel) expiredLabel.textContent = t.expired;
+
+                // History
+                const historyTitle = document.querySelector('#pageRiwayat .list-title');
+                if (historyTitle) historyTitle.innerHTML = `<i class="fas fa-history"></i> ${t.history || t.riwayat}`;
+
+                // Settings
+                const settingsTitle = document.querySelector('#pageSetelan .list-title');
+                if (settingsTitle) settingsTitle.innerHTML = `<i class="fas fa-cog"></i> ${t.settingsDesc || t.setelan}`;
+                const settingLabels = document.querySelectorAll('#pageSetelan .settings-item .left .label');
+                if (settingLabels.length >= 5) {
+                    settingLabels[0].textContent = t.darkMode;
+                    settingLabels[1].textContent = t.notification;
+                    settingLabels[2].textContent = t.language;
+                    settingLabels[3].textContent = t.theme;
+                    settingLabels[4].textContent = t.version;
+                }
+
+                if (darkModeStatus) {
+                    darkModeStatus.textContent = isDarkMode ? (t.active || 'Aktif') : (t.nonaktif || 'Nonaktif');
+                }
+
+                const langNames = {
+                    'id': t.indonesia || 'Indonesia',
+                    'en': t.english || 'English',
+                    'es': t.spanish || 'Español',
+                    'fr': t.french || 'Français'
+                };
+                if (currentLangLabel) {
+                    currentLangLabel.textContent = langNames[currentLang] || 'Indonesia';
+                }
+
+                // Notifikasi status
+                updateNotifUI();
+
+                renderHistory();
+                renderAccounts();
+            }
+
+            function setLanguage(lang) {
+                currentLang = lang;
+                localStorage.setItem('wa_lang', lang);
+                loginLangBtns.forEach(b => {
+                    b.classList.toggle('active', b.dataset.lang === lang);
+                });
+                langOpts.forEach(b => {
+                    b.classList.toggle('active', b.dataset.lang === lang);
+                });
+                updateLanguageUI();
+            }
+
+            loginLangBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setLanguage(this.dataset.lang);
+                });
+            });
+
+            langOpts.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setLanguage(this.dataset.lang);
+                    langOptions.classList.remove('show');
+                });
+            });
+
+            if (settingLanguage) {
+                settingLanguage.addEventListener('click', function() {
+                    langOptions.classList.toggle('show');
+                });
+            }
+
+            const savedLang = localStorage.getItem('wa_lang');
+            if (savedLang && translations[savedLang]) {
+                setLanguage(savedLang);
+            } else {
+                setLanguage('id');
+            }
+
+            // ============ TOGGLE PASSWORD ============
+            togglePass.addEventListener('click', function() {
+                passVisible = !passVisible;
+                loginPass.type = passVisible ? 'text' : 'password';
+                togglePass.innerHTML = passVisible ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+            });
+
+            // ============ STATUS ============
+            function updateStatus(status, duration = null) {
+                const t = getTranslation();
+                statusCard.classList.remove('status-banned', 'status-unbanned', 'status-check');
+
+                if (status === 'banned') {
+                    statusCard.classList.add('status-banned');
+                    statusIcon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                    const durText = duration ? ` (${duration})` : '';
+                    statusTitle.textContent = `${t.blocked}${durText}`;
+                    statusDesc.textContent = `${t.cannotSend}${durText ? ' ' + t.for + ' ' + duration : ''}`;
+                } else {
+                    statusCard.classList.add('status-unbanned');
+                    statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                    const durText = duration ? ` (${duration})` : '';
+                    statusTitle.textContent = `${t.notBlocked}${durText}`;
+                    statusDesc.textContent = `${t.activeNumber}${durText ? ' - ' + t.openedFrom + ' ' + duration : ''}`;
+                }
+            }
+
+            function getDurationLabel(dur) {
+                const map = {
+                    '1hari': '1 Hari',
+                    'banned1hari': 'Banned 1 Hari',
+                    'banned1minggu': 'Banned 1 Minggu',
+                    'bannedpermanen': 'Banned Permanen',
+                    'unbanned1hari': 'Unbanned 1 Hari',
+                    'unbanned1minggu': 'Unbanned 1 Minggu',
+                    'unbannedpermanen': 'Unbanned Permanen'
+                };
+                return map[dur] || dur;
+            }
+
+            function setActiveTab(tab) {
+                activeTab = tab;
+                tabBan.classList.toggle('active', tab === 'ban');
+                tabUnban.classList.toggle('active', tab === 'unban');
+
+                const durBanned1Hari = document.getElementById('durBanned1Hari');
+                const durBanned1Minggu = document.getElementById('durBanned1Minggu');
+                const durBannedPermanen = document.getElementById('durBannedPermanen');
+
+                if (tab === 'ban') {
+                    durBanned1Hari.innerHTML = '<i class="fas fa-ban"></i> Banned 1H';
+                    durBanned1Hari.dataset.duration = 'banned1hari';
+                    durBanned1Minggu.innerHTML = '<i class="fas fa-ban"></i> Banned 1M';
+                    durBanned1Minggu.dataset.duration = 'banned1minggu';
+                    durBannedPermanen.innerHTML = '<i class="fas fa-infinity"></i> Banned Permanen';
+                    durBannedPermanen.dataset.duration = 'bannedpermanen';
+                    executeBtn.classList.remove('mode-unban');
+                    executeBtn.classList.add('mode-ban');
+                } else {
+                    durBanned1Hari.innerHTML = '<i class="fas fa-check-circle"></i> Unbanned 1H';
+                    durBanned1Hari.dataset.duration = 'unbanned1hari';
+                    durBanned1Minggu.innerHTML = '<i class="fas fa-check-circle"></i> Unbanned 1M';
+                    durBanned1Minggu.dataset.duration = 'unbanned1minggu';
+                    durBannedPermanen.innerHTML = '<i class="fas fa-infinity"></i> Unbanned Permanen';
+                    durBannedPermanen.dataset.duration = 'unbannedpermanen';
+                    executeBtn.classList.remove('mode-ban');
+                    executeBtn.classList.add('mode-unban');
+                }
+                updateDurationStyles();
+            }
+
+            function updateDurationStyles() {
+                durationBtns.forEach(btn => {
+                    btn.classList.remove('active-ban', 'active-unban');
+                    if (activeTab === 'ban') {
+                        btn.classList.add('active-ban');
+                    } else {
+                        btn.classList.add('active-unban');
+                    }
+                });
+            }
+
+            // ============ LOADING ============
+            function showLoading(title) {
+                loadingState.style.display = 'flex';
+                loadingDone.classList.remove('show');
+                loadingBar.classList.remove('complete');
+                loadingBar.style.width = '0%';
+                loadingTitle.textContent = title || '⏳ Memproses...';
+                loadingOverlay.classList.add('show');
+                isProcessing = true;
+                executeBtn.disabled = true;
+                navBar.style.pointerEvents = 'none';
+                pauseYT();
+            }
+
+            function hideLoading() {
+                loadingOverlay.classList.remove('show');
+                isProcessing = false;
+                executeBtn.disabled = false;
+                loadingDone.classList.remove('show');
+                loadingState.style.display = 'flex';
+                loadingBar.classList.remove('complete');
+                loadingBar.style.width = '0%';
+                navBar.style.pointerEvents = 'auto';
+                if (currentPage === 'home' && isLoggedIn && splashFinished) {
+                    setTimeout(function() {
+                        startYT();
+                    }, 300);
+                }
+            }
+
+            function simulateLoading(title, callback) {
+                showLoading(title);
+                let progress = 0;
+                const duration = 10000;
+                const interval = 100;
+                const steps = duration / interval;
+                const increment = 100 / steps;
+
+                const timer = setInterval(() => {
+                    progress += increment;
+                    if (progress >= 100) {
+                        progress = 100;
+                        loadingBar.style.width = '100%';
+                        clearInterval(timer);
+                        loadingState.style.display = 'none';
+                        loadingDone.classList.add('show');
+                        loadingBar.classList.add('complete');
+                        setTimeout(() => {
+                            if (callback) callback();
+                            hideLoading();
+                        }, 1200);
+                    } else {
+                        loadingBar.style.width = progress + '%';
+                    }
+                }, interval);
+            }
+
+            // ============ LOGIN ============
+            function showError(message) {
+                loginError.textContent = message;
+                loginError.classList.add('show');
+                setTimeout(() => {
+                    loginError.classList.remove('show');
+                }, 3000);
+            }
+
+            function login() {
+                const user = loginUser.value.trim();
+                const pass = loginPass.value.trim();
+                const t = getTranslation();
+
+                if (!user || !pass) {
+                    showError('Username dan password wajib diisi!');
+                    return;
+                }
+
+                const account = findAccount(user, pass);
+
+                if (account) {
+                    if (isAccountExpired(account)) {
+                        showError('❌ Akun Anda sudah expired!');
+                        return;
+                    }
+
+                    loginError.classList.remove('show');
+                    isLoggedIn = true;
+                    currentUser = user;
+                    currentUserRole = account.role;
+                    currentUserExpired = account.expired;
+
+                    localStorage.setItem('wa_user', JSON.stringify({ username: user, password: pass }));
+                    lastActivityTime = Date.now();
+
+                    loginBtn.innerHTML = '<i class="fas fa-check-circle"></i> BERHASIL';
+                    loginBtn.style.background = 'rgba(52, 211, 153, 0.15)';
+                    loginBtn.style.borderColor = 'rgba(52, 211, 153, 0.2)';
+                    loginBtn.style.color = '#6ee7b7';
+
+                    setTimeout(() => {
+                        loginPage.classList.add('hidden');
+                        mainApp.classList.add('show');
+
+                        displayName.textContent = user;
+                        const roleLabels = {
+                            owner: '👑 Owner',
+                            tangan: '🤝 Tangan Kanan',
+                            vip: '⭐ VIP',
+                            member: '👤 Member'
+                        };
+                        displayRole.textContent = roleLabels[account.role] || account.role;
+                        displayExpired.textContent = account.expired === 'Permanen' ? '♾️ Permanen' :
+                            formatDateDisplay(account.expired);
+
+                        showSplash();
+
+                        renderAccounts();
+                        renderHistory();
+                        updateHistoryBadge();
+                        updateStatus('unbanned');
+                        setActiveTab('ban');
+                        navigateTo('home');
+                        updateLanguageUI();
+
+                        // Minta izin notifikasi
+                        requestNotificationPermission();
+
+                        checkStatus.textContent = t.notChecked;
+                        checkStatus.className = 'status-badge unknown';
+                        statusCard.className = 'status-card status-check';
+                        statusIcon.innerHTML = '<i class="fas fa-question-circle"></i>';
+                        statusTitle.textContent = t.notChecked;
+                        statusDesc.textContent = t.checkNow;
+
+                        showToast(`${t.loginSuccess} ${user}!`, 'success');
+
+                        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> LOGIN';
+                        loginBtn.style.background = '';
+                        loginBtn.style.borderColor = '';
+                        loginBtn.style.color = '';
+                    }, 1200);
+                } else {
+                    showError(`❌ ${t.loginFailed}`);
+                    loginBtn.style.transform = 'scale(0.95)';
+                    setTimeout(() => { loginBtn.style.transform = ''; }, 200);
+                }
+            }
+
+            // ============ LOGOUT ============
+            function logout() {
+                if (isProcessing) {
+                    showToast('Tunggu proses selesai!', 'error');
+                    return;
+                }
+                stopYT();
+                splashVideo.pause();
+                splashVideo.currentTime = 0;
+                splashFinished = false;
+
+                isLoggedIn = false;
+                currentUser = null;
+                currentUserRole = 'owner';
+                currentUserExpired = 'Permanen';
+
+                localStorage.removeItem('wa_user');
+                mainApp.classList.remove('show');
+                loginPage.classList.remove('hidden');
+                loginPass.value = '';
+                loginUser.value = '';
+                bgVideo.classList.remove('show');
+                overlayBg.classList.remove('show');
+                bgVideo.pause();
+                showToast('Logout berhasil!', 'warning');
+            }
+
+            // ============ EXECUTE ============
+            function executeAction() {
+                if (!isLoggedIn) return;
+                if (isProcessing) {
+                    showToast('Tunggu proses sebelumnya selesai!', 'error');
+                    return;
+                }
+                if (waInput.value.trim() === '') {
+                    showToast('Masukkan nomor WhatsApp!', 'error');
+                    waInput.focus();
+                    return;
+                }
+
+                const t = getTranslation();
+                const durLabel = getDurationLabel(selectedDuration);
+                const status = activeTab === 'ban' ? 'banned' : 'unbanned';
+                const actionText = status === 'banned' ? 'Banned' : 'Unbanned';
+                const number = waInput.value.trim();
+
+                simulateLoading(
+                    `⏳ ${actionText} ${number}...`,
+                    function() {
+                        updateStatus(status, durLabel);
+                        // Tambahkan ke history user yang sedang login
+                        addHistory(status, number, durLabel, currentUser);
+                        checkStatus.textContent = t.notChecked;
+                        checkStatus.className = 'status-badge unknown';
+                        showToast(`✅ ${status === 'banned' ? 'Diblokir' : 'Tidak Diblokir'} ${durLabel} berhasil!`,
+                            status === 'banned' ? 'warning' : 'success');
+                    }
+                );
+            }
+
+            // ============ CHECK AUTO LOGIN ============
+            function checkAutoLogin() {
+                const saved = localStorage.getItem('wa_user');
+                if (saved) {
+                    try {
+                        const data = JSON.parse(saved);
+                        const account = findAccount(data.username, data.password);
+                        if (account && !isAccountExpired(account)) {
+                            setTimeout(function() {
+                                loginUser.value = data.username;
+                                loginPass.value = data.password;
+                                login();
+                            }, 300);
+                            return true;
+                        }
+                    } catch (e) {}
+                }
+                return false;
+            }
+
+            // ============ EVENT LISTENERS ============
+            loginBtn.addEventListener('click', login);
+            loginUser.addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+            loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+            logoutBtn.addEventListener('click', logout);
+
+            checkBtn.addEventListener('click', checkNumber);
+
+            waInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    checkNumber();
+                }
+            });
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (isProcessing) {
+                        showToast('Tunggu proses selesai!', 'error');
+                        return;
+                    }
+                    const page = this.dataset.page;
+                    if (page) navigateTo(page);
+                });
+            });
+
+            tabBan.addEventListener('click', function() { setActiveTab('ban'); });
+            tabUnban.addEventListener('click', function() { setActiveTab('unban'); });
+
+            durationBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    durationBtns.forEach(b => b.classList.remove('active-ban', 'active-unban'));
+                    selectedDuration = this.dataset.duration;
+                    if (activeTab === 'ban') {
+                        this.classList.add('active-ban');
+                    } else {
+                        this.classList.add('active-unban');
+                    }
+                });
+            });
+
+            executeBtn.addEventListener('click', executeAction);
+
+            createAccountBtn.addEventListener('click', createAccount);
+
+            // Update aktivitas terakhir
+            document.addEventListener('click', function() {
+                if (isLoggedIn) {
+                    lastActivityTime = Date.now();
+                    localStorage.setItem('wa_last_activity', lastActivityTime);
+                }
+            });
+
+            document.addEventListener('touchstart', function() {
+                if (isLoggedIn) {
+                    lastActivityTime = Date.now();
+                    localStorage.setItem('wa_last_activity', lastActivityTime);
+                }
+            });
+
+            // Restore last activity
+            const savedActivity = localStorage.getItem('wa_last_activity');
+            if (savedActivity) {
+                lastActivityTime = parseInt(savedActivity);
+            }
+
+            // Start reminder checker
+            startReminderCheck();
+
+            // ============ AUTO LOGIN ============
+            if (!checkAutoLogin()) {
+                loginUser.value = '';
+                loginPass.value = '';
+            }
+
+            // ============ INIT ============
+            // Tambahkan history default untuk owner
+            if (!allHistoryData['lanzy']) {
+                allHistoryData['lanzy'] = [];
+            }
+
+            renderAccounts();
+            renderHistory();
+            updateHistoryBadge();
+            updateStatus('unbanned');
+            setActiveTab('ban');
+            toggleVideoWrapper(true);
+            updateLanguageUI();
+
+            const t = getTranslation();
+            checkStatus.textContent = t.notChecked;
+            checkStatus.className = 'status-badge unknown';
+            statusCard.className = 'status-card status-check';
+            statusIcon.innerHTML = '<i class="fas fa-question-circle"></i>';
+            statusTitle.textContent = t.notChecked;
+            statusDesc.textContent = t.checkNow;
+
+            console.log('🔥 自由 - WA Status FULL FITUR');
+            console.log('👤 Owner: lanzy / king');
+            console.log('📅 Expired: Kustom dengan kalender atau Permanen');
+            console.log('📋 Fitur Cek Nomor - cek status banned/aktif');
+            console.log('📜 History per user - setiap akun melihat history masing-masing');
+            console.log('🔔 Notifikasi: real-time banned/unbanned + reminder 1 hari');
+            console.log('👀 Akun: Owner lihat semua, role lain lihat akun yang mereka buat');
+            console.log('🎬 Video: YT.mp4 auto loop, pause saat pindah halaman');
+        })();
+    </script>
+
+</body>
+</html>
